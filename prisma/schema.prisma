@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String   @id @default(cuid())
+  username       String   @unique
+  hashedPassword String
+  name           String
+  role           String   @default("AGENT")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  sales          Sale[]
+}
+
+model Sale {
+  id              String   @id @default(cuid())
+  agentId         String
+  agent           User     @relation(fields: [agentId], references: [id])
+  customerName    String
+  customerAddress String
+  customerPhone   String
+  customerEmail   String?
+  services        String   // JSON-encoded string array e.g. ["Internet","TV"]
+  planNotes       String?
+  spectrumOrderId String?
+  status          String   @default("SUBMITTED")
+  createdAt       DateTime @default(now())
+}

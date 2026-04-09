@@ -10,6 +10,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Spectrum brand colors */
+  --color-spectrum-blue: #0052A5;
+  --color-spectrum-dark: #001B3A;
+  --color-spectrum-purple: #6B1FA5;
+  --color-spectrum-gold: #F6A623;
 }
 
 @media (prefers-color-scheme: dark) {
