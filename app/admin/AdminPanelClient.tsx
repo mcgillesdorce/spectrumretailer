@@ -56,7 +56,7 @@ export default function AdminPanelClient({
   adminName: string;
   adminId: string;
 }) {
-  const [activeTab, setActiveTab] = useState<"agents" | "sales">("sales");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "agents" | "sales">("dashboard");
 
   // Agent state
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -74,6 +74,11 @@ export default function AdminPanelClient({
   const [sales, setSales] = useState<Sale[]>([]);
   const [salesLoading, setSalesLoading] = useState(true);
   const [agentFilter, setAgentFilter] = useState<string>("all");
+
+  // Dashboard month state
+  const now = new Date();
+  const [dashMonth, setDashMonth] = useState(now.getMonth());
+  const [dashYear, setDashYear] = useState(now.getFullYear());
 
   // -- Fetch helpers --
 
@@ -160,15 +165,51 @@ export default function AdminPanelClient({
   const confirmedSales = sales.filter((s) => s.status === "CONFIRMED").length;
   const pendingSales = sales.filter((s) => s.status === "SUBMITTED").length;
 
+  // -- Monthly dashboard stats --
+
+  const monthLabel = new Date(dashYear, dashMonth).toLocaleString("en-US", { month: "long", year: "numeric" });
+
+  const monthlySales = sales.filter((s) => {
+    const d = new Date(s.createdAt);
+    return d.getMonth() === dashMonth && d.getFullYear() === dashYear;
+  });
+
+  const monthlyByAgent = agents.map((agent) => {
+    const agentSales = monthlySales.filter((s) => s.agent?.id === agent.id);
+    return {
+      ...agent,
+      submitted: agentSales.filter((s) => s.status === "SUBMITTED").length,
+      confirmed: agentSales.filter((s) => s.status === "CONFIRMED").length,
+      cancelled: agentSales.filter((s) => s.status === "CANCELLED").length,
+      total: agentSales.length,
+    };
+  }).sort((a, b) => b.total - a.total);
+
+  const maxMonthlySales = Math.max(1, ...monthlyByAgent.map((a) => a.total));
+
+  function prevMonth() {
+    if (dashMonth === 0) { setDashMonth(11); setDashYear(dashYear - 1); }
+    else setDashMonth(dashMonth - 1);
+  }
+  function nextMonth() {
+    if (dashMonth === 11) { setDashMonth(0); setDashYear(dashYear + 1); }
+    else setDashMonth(dashMonth + 1);
+  }
+
   // -- Render ----------------------------------------------------------------
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Nav */}
-      <nav className="bg-spectrum-blue shadow-md">
+      <nav className="bg-spectrum-dark shadow-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="text-white font-bold text-lg tracking-tight">
-            SPECTRUM <span className="font-normal text-white/70">Admin</span>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="bg-spectrum-blue rounded-lg w-8 h-8 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10"/></svg>
+            </div>
+            <span className="text-white font-bold text-lg tracking-tight">
+              HIWS <span className="font-normal text-white/70">Admin</span>
+            </span>
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-white/80 text-sm hidden sm:block">
@@ -191,6 +232,7 @@ export default function AdminPanelClient({
         <div className="flex gap-1 bg-gray-200 rounded-xl p-1 mb-8 w-full sm:w-auto sm:inline-flex">
           {(
             [
+              { key: "dashboard", label: "Dashboard" },
               { key: "sales", label: `Sales Tracking (${totalSales})` },
               { key: "agents", label: `Agent Management (${agents.length})` },
             ] as const
@@ -208,6 +250,62 @@ export default function AdminPanelClient({
             </button>
           ))}
         </div>
+
+        {/* -- Dashboard Tab -- */}
+        {activeTab === "dashboard" && (
+          <div className="space-y-6">
+            {/* Month navigation */}
+            <div className="flex items-center justify-between">
+              <button onClick={prevMonth} className="text-sm text-spectrum-blue hover:underline">&larr; Previous</button>
+              <h2 className="text-lg font-bold text-gray-900">{monthLabel}</h2>
+              <button onClick={nextMonth} className="text-sm text-spectrum-blue hover:underline">Next &rarr;</button>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-4">
+              <StatCard label="Total This Month" value={monthlySales.length} color="blue" />
+              <StatCard label="Confirmed" value={monthlySales.filter((s) => s.status === "CONFIRMED").length} color="green" />
+              <StatCard label="Pending" value={monthlySales.filter((s) => s.status === "SUBMITTED").length} color="yellow" />
+            </div>
+
+            {/* Leaderboard */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">Monthly Leaderboard</h2>
+              </div>
+              {monthlyByAgent.length === 0 ? (
+                <div className="px-6 py-10 text-center text-gray-400">No agents yet.</div>
+              ) : (
+                <div className="divide-y divide-gray-100">
+                  {monthlyByAgent.map((agent, idx) => (
+                    <div key={agent.id} className="flex items-center gap-4 px-6 py-4 hover:bg-gray-50">
+                      <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${idx === 0 ? "bg-spectrum-gold text-spectrum-dark" : idx === 1 ? "bg-gray-200 text-gray-700" : idx === 2 ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-500"}`}>
+                        {idx + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-medium text-gray-900">{agent.name}</span>
+                          <span className="text-xs text-gray-400">@{agent.username}</span>
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${agent.role === "ADMIN" ? "bg-purple-100 text-spectrum-purple" : "bg-blue-50 text-spectrum-blue"}`}>{agent.role}</span>
+                        </div>
+                        <div className="flex items-center gap-4 text-xs text-gray-500 mb-2">
+                          <span>{agent.submitted} submitted</span>
+                          <span className="text-green-600">{agent.confirmed} confirmed</span>
+                          <span className="text-red-500">{agent.cancelled} cancelled</span>
+                          <span className="font-semibold text-gray-900">{agent.total} total</span>
+                        </div>
+                        {/* Progress bar */}
+                        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full bg-gradient-to-r from-spectrum-blue to-spectrum-purple transition-all" style={{ width: `${(agent.total / maxMonthlySales) * 100}%` }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* -- Sales Tab -- */}
         {activeTab === "sales" && (
@@ -379,7 +477,7 @@ export default function AdminPanelClient({
       </main>
 
       <footer className="border-t border-gray-200 py-4 text-center text-xs text-gray-400">
-        Spectrum Authorized Reseller · Admin Panel
+        HIWS · Admin Panel
       </footer>
     </div>
   );

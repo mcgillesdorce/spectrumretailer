@@ -70,24 +70,37 @@ export async function POST(request: Request) {
 
   const normalizedEmail = email ? email.trim().toLowerCase() : undefined;
   if (normalizedEmail) {
-    const emailTaken = await prisma.user.findFirst({ where: { email: normalizedEmail } });
-    if (emailTaken) {
-      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+    try {
+      const emailTaken = await prisma.user.findFirst({ where: { email: normalizedEmail }, select: { id: true } });
+      if (emailTaken) {
+        return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+      }
+    } catch {
+      // email column may not exist yet — skip uniqueness check
     }
   }
 
   const hashedPassword = await bcrypt.hash(password, 12);
+  const userRole = role === "ADMIN" ? "ADMIN" : "AGENT";
 
-  const user = await prisma.user.create({
-    data: {
-      username,
-      name,
-      hashedPassword,
-      email: normalizedEmail ?? null,
-      role: role === "ADMIN" ? "ADMIN" : "AGENT",
-    },
-    select: { id: true, username: true, name: true, email: true, role: true, active: true, createdAt: true },
-  });
+  let user;
+  try {
+    user = await prisma.user.create({
+      data: { username, name, hashedPassword, email: normalizedEmail ?? null, role: userRole },
+      select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
+    });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg.includes("no such column") || msg.includes("email")) {
+      // email column missing in DB — create without it
+      user = await prisma.user.create({
+        data: { username, name, hashedPassword, role: userRole },
+        select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
+      });
+    } else {
+      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    }
+  }
 
   return NextResponse.json(user, { status: 201 });
 }

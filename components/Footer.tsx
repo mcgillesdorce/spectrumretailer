@@ -8,11 +8,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="text-white font-bold text-lg mb-2 tracking-tight">
-              SPECTRUM{" "}
-              <span className="text-spectrum-gold font-normal">Reseller</span>
+              HIWS{" "}
+              <span className="text-spectrum-gold font-normal">Home Internet &amp; Wireless</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed">
-              An authorized Spectrum reseller providing Internet, TV, Mobile, and Voice services
+              Home Internet and Wireless Solutions — providing Internet, TV, Mobile, and Voice services
               with local support.
             </p>
           </div>
@@ -72,10 +72,9 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
-          <p>&copy; {new Date().getFullYear()} Spectrum Authorized Reseller. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} HIWS — Home Internet and Wireless Solutions. All rights reserved.</p>
           <p>
-            Spectrum® is a trademark of Charter Communications. This is an authorized reseller
-            site.
+            Spectrum® is a trademark of Charter Communications. HIWS is an authorized reseller.
           </p>
         </div>
       </div>

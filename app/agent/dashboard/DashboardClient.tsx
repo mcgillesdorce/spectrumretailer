@@ -130,7 +130,7 @@ export default function DashboardClient({
       <nav className="bg-spectrum-blue shadow-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="text-white font-bold text-lg tracking-tight">
-            SPECTRUM <span className="font-normal text-white/70">Reseller Portal</span>
+            HIWS <span className="font-normal text-white/70">Portal</span>
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-white/80 text-sm hidden sm:block">
@@ -167,7 +167,7 @@ export default function DashboardClient({
           <div>
             <h1 className="text-xl font-bold text-gray-900">{agentName}</h1>
             <p className="text-sm text-gray-500">
-              {isAdmin ? "Administrator" : "Sales Agent"} · Spectrum Authorized Reseller
+              {isAdmin ? "Administrator" : "Sales Agent"} · HIWS
             </p>
           </div>
         </div>

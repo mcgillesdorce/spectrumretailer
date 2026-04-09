@@ -12,9 +12,9 @@ export default function AgentLoginPage() {
           <div className="bg-spectrum-blue px-8 py-6 text-center">
             <Link href="/" className="inline-block">
               <div className="text-white text-2xl font-bold tracking-tight">
-                SPECTRUM
+                HIWS
                 <span className="block text-spectrum-gold text-sm font-normal tracking-wider mt-0.5 uppercase">
-                  Authorized Reseller
+                  Home Internet &amp; Wireless Solutions
                 </span>
               </div>
             </Link>
