@@ -35,7 +35,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (!username || !password) return null;
 
         try {
-          const user = await prisma.user.findUnique({ where: { username } });
+          const user = await prisma.user.findUnique({
+            where: { username },
+            select: { id: true, username: true, name: true, hashedPassword: true, role: true, active: true },
+          });
           console.log("[auth] findUnique result:", user ? `found (active=${user.active})` : "not found");
           if (!user || !user.active) return null;
 

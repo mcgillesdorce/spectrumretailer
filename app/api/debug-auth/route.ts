@@ -14,7 +14,10 @@ export async function GET(request: Request) {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.user.findUnique({
+      where: { username },
+      select: { id: true, username: true, name: true, hashedPassword: true, active: true },
+    });
     if (!user) return NextResponse.json({ step: "findUnique", result: "user not found" });
 
     const passwordValid = await bcrypt.compare(password, user.hashedPassword);
