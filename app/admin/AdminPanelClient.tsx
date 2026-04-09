@@ -106,18 +106,22 @@ export default function AdminPanelClient({
   async function handleAddAgent(e: FormEvent) {
     e.preventDefault();
     setFormError(""); setFormSuccess(""); setSubmitting(true);
-    const res = await fetch("/api/agents", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, name, password, email: email || undefined, role }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setFormError(data.error ?? "Failed to create agent");
-    } else {
-      setFormSuccess(`Agent "${data.name}" created successfully.`);
-      setUsername(""); setName(""); setPassword(""); setEmail(""); setRole("AGENT");
-      fetchAgents();
+    try {
+      const res = await fetch("/api/agents", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, name, password, email: email || undefined, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setFormError(data.error ?? "Failed to create agent");
+      } else {
+        setFormSuccess(`Agent "${data.name}" created successfully.`);
+        setUsername(""); setName(""); setPassword(""); setEmail(""); setRole("AGENT");
+        fetchAgents();
+      }
+    } catch (err) {
+      setFormError("Network error — please try again.");
     }
     setSubmitting(false);
   }
@@ -135,6 +139,32 @@ export default function AdminPanelClient({
       });
     }
     fetchAgents();
+  }
+
+  async function handleDeleteUser(agent: Agent) {
+    if (!confirm(`PERMANENTLY DELETE "${agent.name}" (@${agent.username}) and all their sales? This cannot be undone.`)) return;
+    const res = await fetch(`/api/agents/${agent.id}?permanent=true`, { method: "DELETE" });
+    if (res.ok) {
+      fetchAgents();
+      fetchSales(agentFilter === "all" ? undefined : agentFilter);
+    }
+  }
+
+  async function handleResetPassword(agent: Agent) {
+    const newPassword = prompt(`Enter new password for "${agent.name}" (min 8 characters):`);
+    if (!newPassword) return;
+    if (newPassword.length < 8) { alert("Password must be at least 8 characters."); return; }
+    const res = await fetch(`/api/agents/${agent.id}/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newPassword }),
+    });
+    if (res.ok) {
+      alert(`Password for "${agent.name}" has been reset.`);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error ?? "Failed to reset password.");
+    }
   }
 
   // -- Sales handlers --
@@ -458,12 +488,26 @@ export default function AdminPanelClient({
                             View Sales
                           </button>
                           {agent.id !== adminId && (
-                            <button
-                              onClick={() => handleToggleActive(agent)}
-                              className={`text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${agent.active ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}
-                            >
-                              {agent.active ? "Deactivate" : "Reactivate"}
-                            </button>
+                            <>
+                              <button
+                                onClick={() => handleToggleActive(agent)}
+                                className={`text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${agent.active ? "text-red-600 hover:bg-red-50" : "text-green-600 hover:bg-green-50"}`}
+                              >
+                                {agent.active ? "Deactivate" : "Reactivate"}
+                              </button>
+                              <button
+                                onClick={() => handleResetPassword(agent)}
+                                className="text-sm font-medium text-spectrum-purple hover:bg-purple-50 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                Reset PW
+                              </button>
+                              <button
+                                onClick={() => handleDeleteUser(agent)}
+                                className="text-sm font-medium text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
+                              >
+                                Delete
+                              </button>
+                            </>
                           )}
                         </div>
                       </div>

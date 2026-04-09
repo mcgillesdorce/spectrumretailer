@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// DELETE /api/agents/[id] — deactivate or remove an agent (admin only)
+// DELETE /api/agents/[id] — deactivate or permanently delete an agent (admin only)
+// Use ?permanent=true to permanently delete
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
@@ -19,13 +20,22 @@ export async function DELETE(
     return NextResponse.json({ error: "You cannot remove your own account" }, { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({ where: { id }, select: { id: true } });
   if (!user) {
     return NextResponse.json({ error: "Agent not found" }, { status: 404 });
   }
 
-  await prisma.user.update({ where: { id }, data: { active: false } });
+  const url = new URL(request.url);
+  const permanent = url.searchParams.get("permanent") === "true";
 
+  if (permanent) {
+    // Delete sales first, then the user
+    await prisma.sale.deleteMany({ where: { agentId: id } });
+    await prisma.user.delete({ where: { id } });
+    return NextResponse.json({ success: true, deleted: true });
+  }
+
+  await prisma.user.update({ where: { id }, data: { active: false } });
   return NextResponse.json({ success: true });
 }
 
@@ -48,7 +58,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({ where: { id }, select: { id: true } });
   if (!user) {
     return NextResponse.json({ error: "Agent not found" }, { status: 404 });
   }
