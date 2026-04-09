@@ -32,14 +32,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  let body: { username?: string; name?: string; password?: string; role?: string };
+  let body: { username?: string; name?: string; password?: string; role?: string; email?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { username, name, password, role } = body;
+  const { username, name, password, role, email } = body;
 
   if (!username || !name || !password) {
     return NextResponse.json(
@@ -68,6 +68,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Username already exists" }, { status: 409 });
   }
 
+  const normalizedEmail = email ? email.trim().toLowerCase() : undefined;
+  if (normalizedEmail) {
+    const emailTaken = await prisma.user.findFirst({ where: { email: normalizedEmail } });
+    if (emailTaken) {
+      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+    }
+  }
+
   const hashedPassword = await bcrypt.hash(password, 12);
 
   const user = await prisma.user.create({
@@ -75,9 +83,10 @@ export async function POST(request: Request) {
       username,
       name,
       hashedPassword,
+      email: normalizedEmail ?? null,
       role: role === "ADMIN" ? "ADMIN" : "AGENT",
     },
-    select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
+    select: { id: true, username: true, name: true, email: true, role: true, active: true, createdAt: true },
   });
 
   return NextResponse.json(user, { status: 201 });
