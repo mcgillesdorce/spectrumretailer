@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,8 +12,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: "Spectrum Authorized Reseller | Internet, TV & Mobile",
+  title: "HIWS | Home Internet & Wireless Solutions",
   description:
     "Your local Spectrum authorized reseller offering Internet, TV, Mobile, and Voice services. No contracts, no data caps. Call or contact us today.",
 };
