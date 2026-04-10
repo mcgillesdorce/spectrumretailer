@@ -124,36 +124,59 @@ export default function DashboardClient({
     setSubmitting(false);
   }
 
+  async function handleStatusChange(saleId: string, status: string) {
+    await fetch(`/api/sales/${saleId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    fetchSales();
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Nav */}
-      <nav className="bg-spectrum-blue shadow-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="text-white font-bold text-lg tracking-tight">
-            HIWS <span className="font-normal text-white/70">Portal</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-white/80 text-sm hidden sm:block">
-              Welcome, <span className="text-white font-medium">{agentName}</span>
-            </span>
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
-              >
-                Admin Panel
+      <nav className="bg-spectrum-dark shadow-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-16 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <Link href="/" className="text-white font-bold text-lg tracking-tight">
+                HIWS <span className="font-normal text-white/70">Portal</span>
               </Link>
-            )}
-            <button
-                type="button"
+              <div className="hidden sm:flex items-center gap-1">
+                <button onClick={() => setActiveTab("portal")}
+                  className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${activeTab === "portal" ? "bg-white/20 text-white" : "text-white/70 hover:text-white hover:bg-white/10"}`}>
+                  Order Portal
+                </button>
+                <button onClick={() => setActiveTab("log")}
+                  className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${activeTab === "log" ? "bg-white/20 text-white" : "text-white/70 hover:text-white hover:bg-white/10"}`}>
+                  Log Sale
+                </button>
+                <button onClick={() => setActiveTab("history")}
+                  className={`text-sm px-3 py-1.5 rounded-lg transition-colors ${activeTab === "history" ? "bg-white/20 text-white" : "text-white/70 hover:text-white hover:bg-white/10"}`}>
+                  My Sales
+                </button>
+                {isAdmin && (
+                  <Link href="/admin"
+                    className="text-sm text-white/70 hover:text-white hover:bg-white/10 px-3 py-1.5 rounded-lg transition-colors">
+                    Admin Panel
+                  </Link>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-white/80 text-sm hidden sm:block">
+                <span className="text-white font-medium">{agentName}</span>
+              </span>
+              <button type="button"
                 className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
                 onClick={async () => {
                   await fetch("/api/auth/signout", { method: "POST" });
                   window.location.href = "/";
-                }}
-              >
+                }}>
                 Sign Out
               </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -411,7 +434,7 @@ export default function DashboardClient({
             ) : (
               <div className="divide-y divide-gray-100">
                 {sales.map((sale) => (
-                  <SaleRow key={sale.id} sale={sale} />
+                  <SaleRow key={sale.id} sale={sale} onStatusChange={handleStatusChange} />
                 ))}
               </div>
             )}
@@ -426,7 +449,7 @@ export default function DashboardClient({
   );
 }
 
-function SaleRow({ sale }: { sale: Sale }) {
+function SaleRow({ sale, onStatusChange }: { sale: Sale; onStatusChange: (id: string, status: string) => void }) {
   const services = parseServices(sale.services);
   return (
     <div className="px-6 py-4 hover:bg-gray-50">
@@ -462,9 +485,27 @@ function SaleRow({ sale }: { sale: Sale }) {
             </p>
           )}
         </div>
-        <p className="text-xs text-gray-400 whitespace-nowrap flex-shrink-0">
-          {formatDate(sale.createdAt)}
-        </p>
+        <div className="flex flex-col items-end gap-2 flex-shrink-0">
+          <p className="text-xs text-gray-400 whitespace-nowrap">
+            {formatDate(sale.createdAt)}
+          </p>
+          {sale.status === "SUBMITTED" && (
+            <div className="flex gap-1">
+              <button
+                onClick={() => onStatusChange(sale.id, "CONFIRMED")}
+                className="text-xs bg-green-100 text-green-700 hover:bg-green-200 px-2 py-1 rounded transition-colors"
+              >
+                Confirm
+              </button>
+              <button
+                onClick={() => onStatusChange(sale.id, "CANCELLED")}
+                className="text-xs bg-red-100 text-red-700 hover:bg-red-200 px-2 py-1 rounded transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -250,6 +250,16 @@ export default function AdminPanelClient({
             >
               My Dashboard
             </Link>
+            <button
+              type="button"
+              className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
+              onClick={async () => {
+                await fetch("/api/auth/signout", { method: "POST" });
+                window.location.href = "/";
+              }}
+            >
+              Sign Out
+            </button>
           </div>
         </div>
       </nav>

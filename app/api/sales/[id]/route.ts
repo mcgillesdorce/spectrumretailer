@@ -30,8 +30,8 @@ export async function PATCH(
   const data: { status?: string; planNotes?: string; spectrumOrderId?: string } = {};
 
   if (body.status !== undefined) {
-    if (session.user.role !== "ADMIN") {
-      return NextResponse.json({ error: "Only admins can change status" }, { status: 403 });
+    if (session.user.role !== "ADMIN" && sale.agentId !== session.user.id) {
+      return NextResponse.json({ error: "You can only change status on your own sales" }, { status: 403 });
     }
     if (!validStatuses.includes(body.status)) {
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
