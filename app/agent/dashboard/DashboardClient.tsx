@@ -140,7 +140,7 @@ export default function DashboardClient({
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="h-16 flex items-center justify-between">
             <div className="flex items-center gap-6">
-              <Link href="/" className="text-white font-bold text-lg tracking-tight">
+              <Link href="https://www.hiws.io/agent/dashboard" className="text-white font-bold text-lg tracking-tight">
                 HIWS <span className="font-normal text-white/70">Portal</span>
               </Link>
               <div className="hidden sm:flex items-center gap-1">
