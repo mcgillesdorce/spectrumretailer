@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import HappyCustomers from "@/components/HappyCustomers";
 import ServicesGrid from "@/components/ServicesGrid";
 import ServiceAreaSection from "@/components/ServiceAreaSection";
 import ContactSection from "@/components/ContactSection";
@@ -11,6 +12,7 @@ export default function HomePage() {
       <Navbar />
       <main>
         <Hero />
+        <HappyCustomers />
         <ServicesGrid />
         <ServiceAreaSection />
         <ContactSection />

@@ -3,7 +3,6 @@
 import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -60,13 +59,10 @@ export default function LoginForm() {
       </div>
 
       <div>
-        <div className="flex items-center justify-between mb-1">
+        <div className="mb-1">
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
-          <Link href="/agent/forgot-password" className="text-xs text-spectrum-blue hover:underline">
-            Forgot password?
-          </Link>
         </div>
         <input
           id="password"

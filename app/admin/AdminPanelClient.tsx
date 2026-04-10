@@ -64,7 +64,6 @@ export default function AdminPanelClient({
   const [username, setUsername] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
   const [role, setRole] = useState<"AGENT" | "ADMIN">("AGENT");
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
@@ -110,14 +109,14 @@ export default function AdminPanelClient({
       const res = await fetch("/api/agents", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, name, password, email: email || undefined, role }),
+        body: JSON.stringify({ username, name, password, role }),
       });
       const data = await res.json();
       if (!res.ok) {
         setFormError(data.error ?? "Failed to create agent");
       } else {
         setFormSuccess(`Agent "${data.name}" created successfully.`);
-        setUsername(""); setName(""); setPassword(""); setEmail(""); setRole("AGENT");
+        setUsername(""); setName(""); setPassword(""); setRole("AGENT");
         fetchAgents();
       }
     } catch (err) {
@@ -426,10 +425,6 @@ export default function AdminPanelClient({
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Initial Password</label>
                   <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min. 8 characters" className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spectrum-blue text-gray-900" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email <span className="text-gray-400 font-normal">(for password resets)</span></label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="agent@example.com" className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-spectrum-blue text-gray-900" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>

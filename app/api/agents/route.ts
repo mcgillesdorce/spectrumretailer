@@ -32,14 +32,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  let body: { username?: string; name?: string; password?: string; role?: string; email?: string };
+  let body: { username?: string; name?: string; password?: string; role?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { username, name, password, role, email } = body;
+  const { username, name, password, role } = body;
 
   if (!username || !name || !password) {
     return NextResponse.json(
@@ -68,39 +68,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Username already exists" }, { status: 409 });
   }
 
-  const normalizedEmail = email ? email.trim().toLowerCase() : undefined;
-  if (normalizedEmail) {
-    try {
-      const emailTaken = await prisma.user.findFirst({ where: { email: normalizedEmail }, select: { id: true } });
-      if (emailTaken) {
-        return NextResponse.json({ error: "Email already in use" }, { status: 409 });
-      }
-    } catch {
-      // email column may not exist yet — skip uniqueness check
-    }
-  }
-
   const hashedPassword = await bcrypt.hash(password, 12);
   const userRole = role === "ADMIN" ? "ADMIN" : "AGENT";
 
-  let user;
-  try {
-    user = await prisma.user.create({
-      data: { username, name, hashedPassword, email: normalizedEmail ?? null, role: userRole },
-      select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
-    });
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes("no such column") || msg.includes("email")) {
-      // email column missing in DB — create without it
-      user = await prisma.user.create({
-        data: { username, name, hashedPassword, role: userRole },
-        select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
-      });
-    } else {
-      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
-    }
-  }
+  const user = await prisma.user.create({
+    data: { username, name, hashedPassword, role: userRole },
+    select: { id: true, username: true, name: true, role: true, active: true, createdAt: true },
+  });
 
   return NextResponse.json(user, { status: 201 });
 }
