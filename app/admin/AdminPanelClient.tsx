@@ -233,7 +233,7 @@ export default function AdminPanelClient({
       {/* Nav */}
       <nav className="bg-spectrum-dark shadow-md">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="https://www.hiws.io/agent/dashboard" className="flex items-center gap-2">
             <div className="bg-spectrum-blue rounded-lg w-8 h-8 flex items-center justify-center">
               <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10"/></svg>
             </div>
