@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 
 const SPECTRUM_ORDER_URL =
@@ -170,10 +171,7 @@ export default function DashboardClient({
               </span>
               <button type="button"
                 className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
-                onClick={async () => {
-                  await fetch("/api/auth/signout", { method: "POST" });
-                  window.location.href = "/";
-                }}>
+                onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}>
                 Sign Out
               </button>
             </div>
