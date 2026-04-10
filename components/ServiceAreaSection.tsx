@@ -47,7 +47,7 @@ export default function ServiceAreaSection() {
             Not sure if your address is covered? Check availability instantly on the Spectrum website.
           </p>
           <a
-            href="https://www.spectrum.com/services.html"
+            href="https://retail.spectrum.com/address/agent-retail/localization?affiliate=426538&salesID=RT23058"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 bg-spectrum-blue hover:bg-spectrum-dark text-white font-semibold px-6 py-3 rounded-xl transition-colors"
