@@ -58,6 +58,7 @@ export default function AdminPanelClient({
   adminId: string;
 }) {
   const [activeTab, setActiveTab] = useState<"dashboard" | "agents" | "sales">("dashboard");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Agent state
   const [agents, setAgents] = useState<Agent[]>([]);
@@ -232,34 +233,56 @@ export default function AdminPanelClient({
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Nav */}
       <nav className="bg-spectrum-dark shadow-md">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="https://www.hiws.io/agent/dashboard" className="flex items-center gap-2">
-            <div className="bg-spectrum-blue rounded-lg w-8 h-8 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10"/></svg>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="h-16 flex items-center justify-between">
+            <Link href="https://www.hiws.io/agent/dashboard" className="flex items-center gap-2">
+              <div className="bg-spectrum-blue rounded-lg w-8 h-8 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10"/></svg>
+              </div>
+              <span className="text-white font-bold text-lg tracking-tight">
+                HIWS <span className="font-normal text-white/70">Admin</span>
+              </span>
+            </Link>
+            <div className="flex items-center gap-3">
+              <span className="text-white/80 text-sm hidden sm:block">
+                <span className="text-white font-medium">{adminName}</span> · Administrator
+              </span>
+              <Link
+                href="/agent/dashboard"
+                className="hidden sm:inline-flex text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
+              >
+                My Dashboard
+              </Link>
+              <button
+                type="button"
+                className="hidden sm:inline-flex text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
+                onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}
+              >
+                Sign Out
+              </button>
+              <button type="button" className="sm:hidden text-white p-1" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {menuOpen
+                    ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+                </svg>
+              </button>
             </div>
-            <span className="text-white font-bold text-lg tracking-tight">
-              HIWS <span className="font-normal text-white/70">Admin</span>
-            </span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-white/80 text-sm hidden sm:block">
-              <span className="text-white font-medium">{adminName}</span> · Administrator
-            </span>
-            <Link
-              href="/agent/dashboard"
-              className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
-            >
+          </div>
+        </div>
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="sm:hidden border-t border-white/10 px-4 py-3 space-y-1">
+            <span className="block text-sm text-white/60 px-3 py-1">{adminName} · Administrator</span>
+            <Link href="/agent/dashboard" className="block text-sm text-white/70 hover:bg-white/10 px-3 py-2 rounded-lg">
               My Dashboard
             </Link>
-            <button
-              type="button"
-              className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
-              onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}
-            >
+            <button onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}
+              className="block w-full text-left text-sm text-white/70 hover:bg-white/10 px-3 py-2 rounded-lg">
               Sign Out
             </button>
           </div>
-        </div>
+        )}
       </nav>
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">

@@ -60,6 +60,7 @@ export default function DashboardClient({
 }) {
   const [activeTab, setActiveTab] = useState<"portal" | "log" | "history">("portal");
   const [sales, setSales] = useState<Sale[]>(initialSales);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Log sale form
   const [customerName, setCustomerName] = useState("");
@@ -170,13 +171,46 @@ export default function DashboardClient({
                 <span className="text-white font-medium">{agentName}</span>
               </span>
               <button type="button"
-                className="text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
+                className="hidden sm:inline-flex text-sm bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg transition-colors"
                 onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}>
                 Sign Out
+              </button>
+              <button type="button" className="sm:hidden text-white p-1" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {menuOpen
+                    ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />}
+                </svg>
               </button>
             </div>
           </div>
         </div>
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="sm:hidden border-t border-white/10 px-4 py-3 space-y-1">
+            <button onClick={() => { setActiveTab("portal"); setMenuOpen(false); }}
+              className={`block w-full text-left text-sm px-3 py-2 rounded-lg ${activeTab === "portal" ? "bg-white/20 text-white" : "text-white/70 hover:bg-white/10"}`}>
+              Order Portal
+            </button>
+            <button onClick={() => { setActiveTab("log"); setMenuOpen(false); }}
+              className={`block w-full text-left text-sm px-3 py-2 rounded-lg ${activeTab === "log" ? "bg-white/20 text-white" : "text-white/70 hover:bg-white/10"}`}>
+              Log Sale
+            </button>
+            <button onClick={() => { setActiveTab("history"); setMenuOpen(false); }}
+              className={`block w-full text-left text-sm px-3 py-2 rounded-lg ${activeTab === "history" ? "bg-white/20 text-white" : "text-white/70 hover:bg-white/10"}`}>
+              My Sales
+            </button>
+            {isAdmin && (
+              <Link href="/admin" className="block text-sm text-white/70 hover:bg-white/10 px-3 py-2 rounded-lg">
+                Admin Panel
+              </Link>
+            )}
+            <button onClick={() => signOut({ redirectTo: "https://www.hiws.io/agent/login" })}
+              className="block w-full text-left text-sm text-white/70 hover:bg-white/10 px-3 py-2 rounded-lg">
+              Sign Out
+            </button>
+          </div>
+        )}
       </nav>
 
       <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
