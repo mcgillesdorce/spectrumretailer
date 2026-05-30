@@ -150,7 +150,7 @@ export default function GetStartedPage() {
               {/* Hero image — visible on mobile above form, hidden on lg (shown below) */}
               <div className="relative w-full max-w-sm mx-auto lg:hidden rounded-2xl overflow-hidden mb-8 shadow-2xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"
+                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80"
                   alt="Family enjoying fast internet at home"
                   width={600}
                   height={380}
