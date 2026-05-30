@@ -10,7 +10,7 @@ export default function ApplicationForm() {
     setResult("sending");
 
     const formData = new FormData(event.currentTarget);
-    formData.append("access_key", process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "");
+    formData.append("access_key", "9583fa9a-c238-42b8-bff2-08b15d952f26");
     formData.append("subject", "New Spectrum Retailer Application — HIWS");
 
     const response = await fetch("https://api.web3forms.com/submit", {
@@ -65,7 +65,6 @@ export default function ApplicationForm() {
             </div>
           ) : (
             <form onSubmit={onSubmit} className="space-y-5">
-              {/* Name */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="name">
                   Full Name <span className="text-spectrum-gold">*</span>
@@ -80,7 +79,6 @@ export default function ApplicationForm() {
                 />
               </div>
 
-              {/* Business Name */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="business_name">
                   Business Name <span className="text-white/40 font-normal">(optional)</span>
@@ -94,7 +92,6 @@ export default function ApplicationForm() {
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="email">
                   Email Address <span className="text-spectrum-gold">*</span>
@@ -109,7 +106,6 @@ export default function ApplicationForm() {
                 />
               </div>
 
-              {/* Phone */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="phone">
                   Phone Number <span className="text-white/40 font-normal">(optional)</span>
@@ -123,7 +119,6 @@ export default function ApplicationForm() {
                 />
               </div>
 
-              {/* State / Location */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="location">
                   State / City Where You Plan to Operate <span className="text-spectrum-gold">*</span>
@@ -138,7 +133,6 @@ export default function ApplicationForm() {
                 />
               </div>
 
-              {/* Experience */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="experience">
                   Sales / Telecom Experience <span className="text-white/40 font-normal">(optional)</span>
@@ -150,7 +144,7 @@ export default function ApplicationForm() {
                 >
                   <option value="" className="bg-spectrum-dark">Select one…</option>
                   <option value="None" className="bg-spectrum-dark">No prior experience</option>
-                  <option value="Sales < 1 year" className="bg-spectrum-dark">Sales — less than 1 year</option>
+                  <option value="Sales &lt; 1 year" className="bg-spectrum-dark">Sales — less than 1 year</option>
                   <option value="Sales 1-3 years" className="bg-spectrum-dark">Sales — 1–3 years</option>
                   <option value="Sales 3+ years" className="bg-spectrum-dark">Sales — 3+ years</option>
                   <option value="Telecom" className="bg-spectrum-dark">Telecom / ISP industry</option>
@@ -158,7 +152,6 @@ export default function ApplicationForm() {
                 </select>
               </div>
 
-              {/* Message */}
               <div>
                 <label className="block text-white/80 text-sm font-medium mb-1.5" htmlFor="message">
                   Tell Us About Yourself / Questions <span className="text-spectrum-gold">*</span>
