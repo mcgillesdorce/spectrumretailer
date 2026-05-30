@@ -67,6 +67,11 @@ export default function Footer() {
                   Agent Portal
                 </Link>
               </li>
+              <li>
+                <Link href="/become-a-partner" className="hover:text-white transition-colors">
+                  Become a Partner
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
