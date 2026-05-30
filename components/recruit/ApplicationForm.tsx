@@ -10,7 +10,7 @@ export default function ApplicationForm() {
     setResult("sending");
 
     const formData = new FormData(event.currentTarget);
-    formData.append("access_key", "9583fa9a-c238-42b8-bff2-08b15d952f26");
+    formData.append("access_key", process.env.NEXT_PUBLIC_WEB3FORMS_KEY ?? "");
     formData.append("subject", "New Spectrum Retailer Application — HIWS");
 
     const response = await fetch("https://api.web3forms.com/submit", {
