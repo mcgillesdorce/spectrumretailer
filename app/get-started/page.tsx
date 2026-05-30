@@ -85,7 +85,7 @@ const reasons = [
 
 export default function GetStartedPage() {
   return (
-    <div className="min-h-screen bg-spectrum-dark">
+    <div id="top" className="min-h-screen bg-spectrum-dark">
 
       {/* ── Minimal header ── */}
       <header className="bg-spectrum-dark/90 backdrop-blur-sm sticky top-0 z-50 border-b border-white/10">
@@ -233,7 +233,6 @@ export default function GetStartedPage() {
           </h3>
           <a
             href="#top"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
             className="bg-spectrum-gold hover:bg-yellow-400 text-spectrum-dark font-bold px-6 py-3 rounded-xl text-sm transition-colors"
           >
             Check My Address →
@@ -330,7 +329,6 @@ export default function GetStartedPage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <a
               href="#top"
-              onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
               className="bg-spectrum-gold hover:bg-yellow-400 text-spectrum-dark font-extrabold px-8 py-4 rounded-xl text-base transition-colors"
             >
               Get My Free Quote
