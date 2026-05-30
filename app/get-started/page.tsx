@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import LandingContactForm from "@/components/landing/LandingContactForm";
+import StickyCallBar from "@/components/landing/StickyCallBar";
 
 export const metadata: Metadata = {
   title: "Get Spectrum Internet, TV & Mobile | HIWS",
@@ -86,6 +87,7 @@ const reasons = [
 export default function GetStartedPage() {
   return (
     <div id="top" className="min-h-screen bg-spectrum-dark">
+      <StickyCallBar />
 
       {/* ── Minimal header ── */}
       <header className="bg-spectrum-dark/90 backdrop-blur-sm sticky top-0 z-50 border-b border-white/10">
@@ -347,7 +349,7 @@ export default function GetStartedPage() {
       </section>
 
       {/* ── Minimal footer ── */}
-      <footer className="bg-gray-900 px-4 py-6 text-center">
+      <footer className="bg-gray-900 px-4 py-6 pb-24 lg:pb-6 text-center">
         <p className="text-gray-500 text-xs">
           &copy; {new Date().getFullYear()} HIWS — Home Internet and Wireless Solutions. All rights reserved.
           <br />
