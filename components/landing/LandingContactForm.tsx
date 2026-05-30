@@ -2,15 +2,22 @@
 
 import { useState, FormEvent } from "react";
 
-const SERVICES = ["Internet", "TV", "Mobile", "Voice", "Bundle", "Not sure"];
+const SERVICES = ["Internet", "TV", "Mobile", "Voice", "Bundle"];
 
 const INPUT_CLS =
   "w-full px-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-spectrum-gold focus:border-transparent transition-colors text-base";
 
 export default function LandingContactForm() {
   const [result, setResult] = useState<"idle" | "sending" | "success" | "error">("idle");
-  const [selectedService, setSelectedService] = useState("");
+  const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set());
   const [showNote, setShowNote] = useState(false);
+
+  const toggleService = (svc: string) =>
+    setSelectedServices((prev) => {
+      const next = new Set(prev);
+      next.has(svc) ? next.delete(svc) : next.add(svc);
+      return next;
+    });
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,7 +26,8 @@ export default function LandingContactForm() {
     const formData = new FormData(event.currentTarget);
     formData.append("access_key", "b8355ef5-b3ed-4614-8b7e-9b17653d932c");
     formData.append("subject", "New Spectrum Customer Inquiry — HIWS");
-    if (selectedService) formData.set("service_interest", selectedService);
+    const services = selectedServices.size > 0 ? [...selectedServices].join(", ") : "Not specified";
+    formData.set("service_interest", services);
 
     try {
       const controller = new AbortController();
@@ -36,7 +44,7 @@ export default function LandingContactForm() {
 
       if (data.success) {
         setResult("success");
-        setSelectedService("");
+        setSelectedServices(new Set());
         setShowNote(false);
         (event.target as HTMLFormElement).reset();
       } else {
@@ -76,26 +84,33 @@ export default function LandingContactForm() {
     <form onSubmit={onSubmit} className="space-y-3">
       <input type="checkbox" name="botcheck" style={{ display: "none" }} />
 
-      {/* Quick-tap service chips */}
+      {/* Quick-tap service chips — multi-select */}
       <div>
-        <p className="text-white/50 text-xs mb-2 font-medium">I&apos;m interested in:</p>
+        <p className="text-white/50 text-xs mb-2 font-medium">
+          I&apos;m interested in:{" "}
+          <span className="text-white/30">(select all that apply)</span>
+        </p>
         <div className="flex flex-wrap gap-2">
           {SERVICES.map((svc) => (
             <button
               key={svc}
               type="button"
-              onClick={() => setSelectedService(svc === selectedService ? "" : svc)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${
-                selectedService === svc
-                  ? "bg-spectrum-gold border-spectrum-gold text-spectrum-dark scale-105"
+              onClick={() => toggleService(svc)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all flex items-center gap-1.5 ${
+                selectedServices.has(svc)
+                  ? "bg-spectrum-gold border-spectrum-gold text-spectrum-dark"
                   : "bg-white/5 border-white/20 text-white/70 hover:border-white/50 hover:text-white"
               }`}
             >
+              {selectedServices.has(svc) && (
+                <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
               {svc}
             </button>
           ))}
         </div>
-        <input type="hidden" name="service_interest" value={selectedService || "Not specified"} />
       </div>
 
       <input
