@@ -51,7 +51,7 @@ const faqs = [
   {
     question: "Who do I contact if I have questions during the partnership?",
     answer:
-      "You'll have a dedicated account manager at HIWS who is your first point of contact for any questions — from order submission issues to commission inquiries. We're reachable at (888) 510-4882 or hiwsinternet@gmail.com.",
+      "You'll have a dedicated account manager at HIWS who is your first point of contact for any questions — from order submission issues to commission inquiries. We're reachable at (888) 510-4882 or Info@HIWS.io.",
   },
 ];
 
@@ -71,10 +71,10 @@ export default function FAQSection() {
           <p className="text-gray-500 mt-3 max-w-xl mx-auto">
             Still have questions? Reach us at{" "}
             <a
-              href="mailto:hiwsinternet@gmail.com"
+              href="mailto:Info@HIWS.io"
               className="text-spectrum-blue hover:underline"
             >
-              hiwsinternet@gmail.com
+              Info@HIWS.io
             </a>{" "}
             or call{" "}
             <a href="tel:8885104882" className="text-spectrum-blue hover:underline">

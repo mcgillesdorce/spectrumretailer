@@ -34,7 +34,7 @@ export default function RecruitContactCTA() {
               </svg>
             </div>
             <h3 className="text-white font-semibold mb-1">Email Us</h3>
-            <p className="text-white/80 text-sm font-medium">hiwsinternet@gmail.com</p>
+            <p className="text-white/80 text-sm font-medium">Info@HIWS.io</p>
             <p className="text-white/40 text-xs mt-0.5">We reply within 24 hours</p>
           </div>
 

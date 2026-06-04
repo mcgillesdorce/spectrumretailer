@@ -33,7 +33,7 @@ export default function ContactSection() {
               </svg>
             }
             title="Email Us"
-            line1="hiwsinternet@gmail.com"
+            line1="Info@HIWS.io"
             line2="We reply within 24 hours"
           />
           <ContactCard

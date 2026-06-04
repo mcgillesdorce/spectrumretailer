@@ -358,7 +358,7 @@ export default function GetStartedPage() {
         <div className="flex justify-center gap-4 mt-3 text-xs text-gray-600">
           <Link href="/" className="hover:text-gray-400 transition-colors">Home</Link>
           <Link href="/become-a-partner" className="hover:text-gray-400 transition-colors">Become a Partner</Link>
-          <a href="mailto:hiwsinternet@gmail.com" className="hover:text-gray-400 transition-colors">Contact</a>
+          <a href="mailto:Info@HIWS.io" className="hover:text-gray-400 transition-colors">Contact</a>
         </div>
       </footer>
     </div>
